@@ -44,6 +44,16 @@ type InternalAPI struct {
 	HasStatus     bool
 }
 
+func (a InternalAPI) Equal(b InternalAPI) bool {
+	return a.Names.Kind == b.Names.Kind &&
+		a.Names.Plural == b.Names.Plural &&
+		a.Names.Singular == b.Names.Singular &&
+		a.GroupVersion == b.GroupVersion &&
+		a.ResourceScope == b.ResourceScope &&
+		a.HasStatus == b.HasStatus &&
+		a.Instance.GetObjectKind().GroupVersionKind() == b.Instance.GetObjectKind().GroupVersionKind()
+}
+
 func CreateAPIResourceSchemas(schemes []*runtime.Scheme, openAPIDefinitionsGetters []common.GetOpenAPIDefinitions, defs ...InternalAPI) ([]*apisv1alpha1.APIResourceSchema, error) {
 	config := genericapiserver.DefaultOpenAPIConfig(func(ref common.ReferenceCallback) map[string]common.OpenAPIDefinition {
 		result := make(map[string]common.OpenAPIDefinition)
